@@ -3,3 +3,7 @@
 /fastapienv
 .idea
 .env
+
+# Python cache
+__pycache__/
+*.py[cod]

@@ -1,17 +1,78 @@
-.chat-box {
-    background-color: #f8f9fa; /* Bootstrap light background */
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 14px;
-    word-wrap: break-word;
+/* ===== Global Website Background ===== */
+body {
+    background-image: url("background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
 }
 
+/* ===== Glass Card (instead of white Bootstrap card) ===== */
+.glass-card {
+    background: rgba(0, 0, 0, 0.45); /* שקוף כהה */
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ===== Chat Box ===== */
+.chat-box {
+    background: rgba(255, 255, 255, 0.08); /* כמעט שקוף */
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    word-wrap: break-word;
+
+    color: #f1f1f1;
+}
+
+/* ===== Messages ===== */
 p.user {
-    color: #333;
-    margin: 5px 0;
+    color: #ffffff;
+    margin: 6px 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 p.ai {
-    color: #0066cc;
-    margin: 5px 0;
+    color: #4facff;
+    margin: 6px 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== Textarea ===== */
+textarea.form-control {
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+textarea.form-control::placeholder {
+    color: #cccccc;
+}
+
+/* ===== Button ===== */
+button.btn-success {
+    background-color: #16a34a;
+    border: none;
+}
+
+button#sendBtn{
+        background: #2c6ca5;
+
+}
+
+button#sendBtn:hover {
+    background-color: #2c6ca578;
+    border-color: #2c6ca5;
+}
+
+.form-control:focus {
+    background-color: #212529;
+    color: white;
 }

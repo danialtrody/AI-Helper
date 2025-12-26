@@ -4,11 +4,11 @@ from google import genai
 import os
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from database import SessionLocal
+from backend.database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated
-from models import Chat, User
-from database import Base, engine
+from backend.models import Chat, User
+from backend.database import Base, engine
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 

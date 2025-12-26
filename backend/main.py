@@ -97,7 +97,6 @@ async def chat(request: ChatRequest, db: db_dependency):
         print("[AI] Sending request to Gemini model")
 
         try:
-            # System prompt למענה קצר ולעניין
             system_prompt = (
                 "ענה תמיד בקצרה ולעניין. "
                 "בלי רשימות, בלי כותרות, בלי Markdown. "

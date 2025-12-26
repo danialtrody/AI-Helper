@@ -1,17 +1,26 @@
-<textarea id="message"></textarea>
-<button onclick="sendMessage()">Send</button>
-<div id="chat"></div>
-<script>
-async function sendMessage() {
-  const message = document.getElementById("message").value;
-  const response = await fetch("http://127.0.0.1:8000", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({message: message})
-  });
-  const data = await response.json();
-  document.getElementById("chat").innerHTML += "<p>You: "+message+"</p>";
-  document.getElementById("chat").innerHTML += "<p>AI: "+data.reply+"</p>";
-  document.getElementById("message").value = "";
-}
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat AI</title>
+</head>
+<body>
+    <textarea id="message" placeholder="Type your message..."></textarea>
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat"></div>
+
+    <script>
+    async function sendMessage() {
+      const message = document.getElementById("message").value;
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: message})
+      });
+      const data = await response.json();
+      document.getElementById("chat").innerHTML += "<p>You: "+message+"</p>";
+      document.getElementById("chat").innerHTML += "<p>AI: "+data.reply+"</p>";
+      document.getElementById("message").value = "";
+    }
+    </script>
+</body>
+</html>

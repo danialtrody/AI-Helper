@@ -1,22 +1,22 @@
-from fastapi import FastAPI, HTTPException , Depends
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from google import genai
-import os
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from backend.database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated
-from backend.models import Chat, User
-from backend.database import Base, engine
-from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
+from google import genai
+from backend.database import SessionLocal, Base, engine
+from backend.models import Chat, User
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# יצירת טבלאות אם לא קיימות
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -29,12 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
 BASE_DIR = Path(__file__).resolve().parent  # backend/
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
 
 app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
 
 def get_db():
     db = SessionLocal()
@@ -50,18 +49,24 @@ class ChatRequest(BaseModel):
     message: str
     user_id: str = "guest"
 
+
 cache = {}
 
-@app.post("/")
-async def chat(request: ChatRequest, db: db_dependency):
+# GET / -> serve index.html
+@app.get("/")
+async def displayIndex():
+    return FileResponse(FRONTEND_DIR / "index.html")
 
+
+# POST / -> chat endpoint
+@app.post("/chat")
+async def chat(request: ChatRequest, db: db_dependency):
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="Message is empty")
 
     try:
         print(f"[CHAT] New request | user_id={request.user_id}")
 
-        # בדיקה אם המשתמש קיים, אם לא – צור אותו
         user = db.query(User).filter(User.id == request.user_id).first()
         if not user:
             user = User(id=request.user_id, username=request.user_id, hashed_password="")
@@ -70,7 +75,6 @@ async def chat(request: ChatRequest, db: db_dependency):
             db.refresh(user)
             print(f"[USER CREATED] id={user.id}")
 
-        # שימוש במזהה משתמש מאומת
         db_user_id = user.id
 
         # Cache
@@ -82,10 +86,7 @@ async def chat(request: ChatRequest, db: db_dependency):
         # DB check
         chat_row = (
             db.query(Chat)
-            .filter(
-                Chat.user_id == db_user_id,
-                Chat.message == request.message
-            )
+            .filter(Chat.user_id == db_user_id, Chat.message == request.message)
             .first()
         )
 
@@ -96,20 +97,18 @@ async def chat(request: ChatRequest, db: db_dependency):
 
         print("[AI] Sending request to Gemini model")
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=request.message
-        )
-
-        reply = response.text
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=request.message
+            )
+            reply = response.text
+        except Exception as e:
+            print(f"[API ERROR] {str(e)}")
+            reply = f"[MOCK RESPONSE] Echo: {request.message}"
 
         # Save to DB
-        chat_history = Chat(
-            user_id=db_user_id,
-            message=request.message,
-            reply=reply
-        )
-
+        chat_history = Chat(user_id=db_user_id, message=request.message, reply=reply)
         db.add(chat_history)
         db.commit()
         db.refresh(chat_history)

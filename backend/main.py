@@ -52,7 +52,7 @@ class ChatRequest(BaseModel):
 
 cache = {}
 
-@app.post("/chat")
+@app.post("/")
 async def chat(request: ChatRequest, db: db_dependency):
 
     if not request.message.strip():

@@ -1,0 +1,17 @@
+.chat-box {
+    background-color: #f8f9fa; /* Bootstrap light background */
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+p.user {
+    color: #333;
+    margin: 5px 0;
+}
+
+p.ai {
+    color: #0066cc;
+    margin: 5px 0;
+}

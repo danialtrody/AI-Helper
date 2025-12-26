@@ -1,14 +1,23 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException , Depends
 from pydantic import BaseModel
 from google import genai
-import psycopg2
 import os
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from database import SessionLocal
+from sqlalchemy.orm import Session
+from typing import Annotated
+from models import Chat, User
+from database import Base, engine
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+# יצירת טבלאות אם לא קיימות
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -20,6 +29,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
+BASE_DIR = Path(__file__).resolve().parent  # backend/
+FRONTEND_DIR = BASE_DIR.parent / "frontend"
+
+app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+db_dependency = Annotated[Session, Depends(get_db)]
+
+
 class ChatRequest(BaseModel):
     message: str
     user_id: str = "guest"
@@ -27,42 +53,72 @@ class ChatRequest(BaseModel):
 cache = {}
 
 @app.post("/chat")
-def chat(request: ChatRequest):
+async def chat(request: ChatRequest, db: db_dependency):
+
+    if not request.message.strip():
+        raise HTTPException(status_code=400, detail="Message is empty")
+
     try:
-        if request.message in cache:
-            return {"reply": cache[request.message]}
+        print(f"[CHAT] New request | user_id={request.user_id}")
 
-        with psycopg2.connect(DATABASE_URL) as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(
-                    "SELECT reply FROM chat_history WHERE message=%s LIMIT 1",
-                    (request.message,)
-                )
-                result = cursor.fetchone()
-                if result:
-                    reply = result[0]
-                    cache[request.message] = reply
-                    return {"reply": reply}
+        # בדיקה אם המשתמש קיים, אם לא – צור אותו
+        user = db.query(User).filter(User.id == request.user_id).first()
+        if not user:
+            user = User(id=request.user_id, username=request.user_id, hashed_password="")
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            print(f"[USER CREATED] id={user.id}")
 
+        # שימוש במזהה משתמש מאומת
+        db_user_id = user.id
+
+        # Cache
+        cache_key = f"{db_user_id}:{request.message}"
+        if cache_key in cache:
+            print(f"[CACHE HIT] user_id={db_user_id}")
+            return {"reply": cache[cache_key]}
+
+        # DB check
+        chat_row = (
+            db.query(Chat)
+            .filter(
+                Chat.user_id == db_user_id,
+                Chat.message == request.message
+            )
+            .first()
+        )
+
+        if chat_row:
+            print(f"[DB HIT] message found | id={chat_row.id}")
+            cache[cache_key] = chat_row.reply
+            return {"reply": chat_row.reply}
+
+        print("[AI] Sending request to Gemini model")
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=request.message
         )
+
         reply = response.text
 
+        # Save to DB
+        chat_history = Chat(
+            user_id=db_user_id,
+            message=request.message,
+            reply=reply
+        )
 
-        with psycopg2.connect(DATABASE_URL) as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO chat_history (user_id, message, reply) VALUES (%s, %s, %s)",
-                    (request.user_id, request.message, reply)
-                )
-                conn.commit()
+        db.add(chat_history)
+        db.commit()
+        db.refresh(chat_history)
 
-        cache[request.message] = reply
+        cache[cache_key] = reply
 
+        print(f"[SUCCESS] Response saved | chat_id={chat_history.id}")
         return {"reply": reply}
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"[ERROR] {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")

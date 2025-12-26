@@ -8,8 +8,6 @@ from typing import Annotated
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-
-
 from google import genai
 from backend.database import SessionLocal, Base, engine
 from backend.models import Chat, User

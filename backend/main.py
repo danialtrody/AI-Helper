@@ -9,13 +9,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+
 from google import genai
 from backend.database import SessionLocal, Base, engine
 from backend.models import Chat, User
+from backend.tools import normalize_reply
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-
 
 Base.metadata.create_all(bind=engine)
 
@@ -29,9 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = Path(__file__).resolve().parent  # backend/
+BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
-
 app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
 
@@ -51,6 +51,7 @@ class ChatRequest(BaseModel):
 
 
 cache = {}
+
 
 # GET / -> serve index.html
 @app.get("/")
@@ -98,11 +99,24 @@ async def chat(request: ChatRequest, db: db_dependency):
         print("[AI] Sending request to Gemini model")
 
         try:
+            # System prompt למענה קצר ולעניין
+            system_prompt = (
+                "ענה תמיד בקצרה ולעניין. "
+                "בלי רשימות, בלי כותרות, בלי Markdown. "
+                "מקסימום 2–3 משפטים קצרים. "
+                "תשובה רציפה בפסקה אחת. "
+                "השפה של התשובה חייבת להיות **אותה שפה שבה המשתמש כתב את ההודעה**. "
+                "אם המשתמש כתב באנגלית, אתה עונה באנגלית. אם בעברית, אתה עונה בעברית."
+            )
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                contents=request.message
+                contents=[
+                    system_prompt,
+                    request.message
+                ]
             )
-            reply = response.text
+            reply = normalize_reply(response.text)
+
         except Exception as e:
             print(f"[API ERROR] {str(e)}")
             reply = f"[MOCK RESPONSE] Echo: {request.message}"

@@ -1,4 +1,3 @@
-/* ===== Global Website Background ===== */
 body {
     background-image: url("background.png");
     background-size: cover;
@@ -13,12 +12,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-y: auto; /* מאפשר גלילה אם התוכן גדול מהמכשיר */
 }
 
-/* ===== Glass Card (instead of white Bootstrap card) ===== */
 .glass-card {
-    background: rgba(0, 0, 0, 0.45); /* שקוף כהה */
+    background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 
@@ -26,13 +23,12 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
 
     width: 100%;
-    max-width: 600px; /* מקסימום רוחב לשולחן העבודה */
+    max-width: 600px;
     margin: auto;
 }
 
-/* ===== Chat Box ===== */
 .chat-box {
-    background: rgba(255, 255, 255, 0.08); /* כמעט שקוף */
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     padding: 12px;
     font-size: 14px;
@@ -43,7 +39,6 @@ body {
     overflow-y: auto;
 }
 
-/* ===== Messages ===== */
 p.user {
     color: #ffffff;
     margin: 6px 0;
@@ -56,7 +51,6 @@ p.ai {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-/* ===== Textarea ===== */
 textarea.form-control {
     background: rgba(0, 0, 0, 0.5);
     color: #ffffff;
@@ -67,7 +61,7 @@ textarea.form-control::placeholder {
     color: #cccccc;
 }
 
-/* ===== Button ===== */
+
 button.btn-success {
     background-color: #16a34a;
     border: none;
@@ -93,19 +87,25 @@ button#sendBtn:hover {
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        background-attachment: scroll; /* fixed גורם לבעיה במובייל */
-        align-items: flex-start; /* top-align כדי למנוע קפיצה */
+        background-attachment: scroll;
+        align-items: flex-start;
         padding-top: 20px;
         padding-bottom: 20px;
     }
 
     .glass-card {
-        max-width: 90%; /* קטן יותר על מובייל */
+        max-width: 90%;
+        height: auto !important;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
     }
 
     .card-body.d-flex.flex-column {
-        height: auto !important; /* תן לגובה לגדול לפי התוכן */
-        max-height: 75vh; /* לא גדול מדי */
+        height: auto !important;
+        max-height: 75vh;
+        display: flex;
+        flex-direction: column;
     }
 
     .chat-box {
@@ -113,11 +113,17 @@ button#sendBtn:hover {
         min-height: 120px;
     }
 
+    textarea, button#sendBtn {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+    }
+
     body {
         background-size: contain;
         background-repeat: round;
-
     }
+
     .col-12.col-md-6 {
         margin-bottom: 30%;
     }

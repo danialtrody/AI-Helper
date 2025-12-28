@@ -4,10 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById("chat");
     const clearBtn = document.getElementById("clearBtn");
 
-    sendBtn.addEventListener("click", sendMessage);
+    sendBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        sendMessage();
+    });
 
-
-    clearBtn.addEventListener("click", () => {
+    clearBtn.addEventListener("click", (e) => {
+        e.preventDefault();  // Prevent default
         chatBox.innerHTML = "";
         messageInput.value = "";
         messageInput.focus();

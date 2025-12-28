@@ -77,3 +77,20 @@ button#sendBtn:hover {
     color: white;
 }
 
+
+/* This CSS will apply only on screens smaller than 768px (typical mobile devices) */
+@media only screen and (max-width: 768px) {
+    body {
+        background-image: url("background.png");
+        background-size: contain;
+        background-position: unset;
+        background-repeat: round;
+        align-items: flex-start;
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+      .card-body {
+        height: auto;
+        max-height: 80vh;
+      }
+}

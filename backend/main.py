@@ -11,7 +11,6 @@ import os
 from google import genai
 
 from backend.database import SessionLocal, Base, engine
-from backend.models import Chat, User
 from backend.db_service import get_chat, get_or_create_user, addMessageToDB
 from backend.ai_service import generate_reply
 

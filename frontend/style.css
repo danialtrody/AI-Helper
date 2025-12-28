@@ -9,6 +9,11 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: Arial, sans-serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto; /* מאפשר גלילה אם התוכן גדול מהמכשיר */
 }
 
 /* ===== Glass Card (instead of white Bootstrap card) ===== */
@@ -19,6 +24,10 @@ body {
 
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.15);
+
+    width: 100%;
+    max-width: 600px; /* מקסימום רוחב לשולחן העבודה */
+    margin: auto;
 }
 
 /* ===== Chat Box ===== */
@@ -30,6 +39,8 @@ body {
     word-wrap: break-word;
 
     color: #f1f1f1;
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 /* ===== Messages ===== */
@@ -62,9 +73,8 @@ button.btn-success {
     border: none;
 }
 
-button#sendBtn{
-        background: #2c6ca5;
-
+button#sendBtn {
+    background: #2c6ca5;
 }
 
 button#sendBtn:hover {
@@ -77,20 +87,38 @@ button#sendBtn:hover {
     color: white;
 }
 
-
-/* This CSS will apply only on screens smaller than 768px (typical mobile devices) */
+/* ===== Mobile Adjustments ===== */
 @media only screen and (max-width: 768px) {
     body {
-        background-image: url("background.png");
-        background-size: contain;
-        background-position: unset;
-        background-repeat: round;
-        align-items: flex-start;
-        padding-top: 30px;
-        padding-bottom: 30px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: scroll; /* fixed גורם לבעיה במובייל */
+        align-items: flex-start; /* top-align כדי למנוע קפיצה */
+        padding-top: 20px;
+        padding-bottom: 20px;
     }
-      .card-body {
-        height: auto;
-        max-height: 80vh;
-      }
+
+    .glass-card {
+        max-width: 90%; /* קטן יותר על מובייל */
+    }
+
+    .card-body.d-flex.flex-column {
+        height: auto !important; /* תן לגובה לגדול לפי התוכן */
+        max-height: 75vh; /* לא גדול מדי */
+    }
+
+    .chat-box {
+        max-height: 220px;
+        min-height: 120px;
+    }
+
+    body {
+        background-size: contain;
+        background-repeat: round;
+
+    }
+    .col-12.col-md-6 {
+        margin-bottom: 30%;
+    }
 }

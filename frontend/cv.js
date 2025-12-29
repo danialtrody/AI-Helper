@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     submitBtn.addEventListener("click", async (e) => {
         e.preventDefault();
-
         const jobTitle = jobTitleInput.value.trim();
         const file = cvFileInput.files[0];
 
@@ -24,11 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("job_title", jobTitle);
             formData.append("user_id", "guest");
 
-            const response = await fetch("/cv/upload", {  // <-- תואם ל-backend
-                method: "POST",
-                body: formData
-            });
-
+            const response = await fetch("/cv/upload", { method: "POST", body: formData });
             const data = await response.json();
             appendMessage("AI Feedback", data.feedback);
 

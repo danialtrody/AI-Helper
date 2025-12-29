@@ -16,3 +16,14 @@ class Chat(Base):
     message = Column(Text, nullable=False)
     reply = Column(Text)
     user_id = Column(String, ForeignKey("users.id"))
+
+
+class CV(Base):
+    __tablename__ = "cv"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"))
+    filename = Column(String)
+    job_title = Column(String)
+    content = Column(Text)
+    ai_feedback = Column(Text)
+

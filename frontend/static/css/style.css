@@ -173,7 +173,7 @@ textarea#message {
         margin-bottom: 4%;
     }
 
-    textarea.form-control {
+    textarea#message {
 
     min-height: 80px;
     }
@@ -182,4 +182,37 @@ textarea#message {
     display: flex;
     flex-direction: row;
     }
+
+    p.ai, p.system {
+        font-size: medium !important;
+    }
+    .you {
+        font-size: medium !important;
+    }
+
+        body, html {
+        overflow: hidden; /* מונע גלילה כללית */
+        height: 100vh;
+    }
+
+    .chat-container {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .chat-messages {
+        max-height: 60vh; /* רק הדיאלוגים יגללו */
+        overflow-y: auto;
+    }
+
+    .chat-box {
+        height: 100%;
+        max-height: 274px;
+    }
+
+    .flex-column {
+    justify-content: center;
+    }
+
 }

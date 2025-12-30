@@ -4,8 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatBox = document.getElementById("chat");
     const messageInput = document.getElementById("message");
 
-    sendBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
+    async function sendMessage() {
         const message = messageInput.value.trim();
         if (!message) return;
 
@@ -23,6 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             appendMessage("System", "[Error] Could not get reply.");
             console.error(err);
+        }
+    }
+
+    sendBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        sendMessage();
+    });
+
+    messageInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault(); // מונע ירידת שורה
+            sendMessage();
         }
     });
 

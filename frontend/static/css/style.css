@@ -125,6 +125,32 @@ textarea#message {
     min-height: 100px;
 }
 
+.navbar-expand-md .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+
+
+
+footer{
+    font-family: 'Segoe UI', sans-serif;
+    background: #000000a6 !important;
+    width: 100%;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #ffc107;
+    text-decoration: underline;
+}
+
 /* ===== Mobile Adjustments ===== */
 @media only screen and (max-width: 768px) {
     body {
@@ -178,32 +204,12 @@ textarea#message {
     min-height: 80px;
     }
 
-    ul.navbar-nav.me-auto.mb-2.mb-md-0 {
-    display: flex;
-    flex-direction: row;
-    }
 
     p.ai, p.system {
         font-size: medium !important;
     }
     .you {
         font-size: medium !important;
-    }
-
-        body, html {
-        overflow: hidden; /* מונע גלילה כללית */
-        height: 100vh;
-    }
-
-    .chat-container {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-    }
-
-    .chat-messages {
-        max-height: 60vh; /* רק הדיאלוגים יגללו */
-        overflow-y: auto;
     }
 
     .chat-box {
@@ -214,5 +220,12 @@ textarea#message {
     .flex-column {
     justify-content: center;
     }
+
+    footer{
+    background: #000000a6 !important;
+    width: 100%;
+}
+
+
 
 }

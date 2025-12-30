@@ -1,5 +1,5 @@
 # backend/services/cv_service.py
-from backend.services.ai_service import generate_reply
+from backend.services.ai_service import cv_generate_reply
 from PyPDF2 import PdfReader
 import docx
 
@@ -33,15 +33,32 @@ async def read_cv_file(file):
     return content
 
 def generate_cv_feedback(content: str, job_title: str, client):
-    """Generate concise AI feedback for CV targeting a specific job title."""
-    prompt = f"""
-                You are an expert career coach.
-                Analyze this CV text for the role '{job_title}'.
-                Give concise feedback in 6 short sentences max.
-                Focus on what to highlight or improve for {job_title} roles, clarity, skills, and achievements.
-                CV content:
-                
-                {content}
-            """
-    return generate_reply(client, prompt)
+    """
+    Generate concise, actionable CV feedback (6-7 lines max),
+    structured in bullet points, including example sentences.
+    Respond in the same language as the job title.
+    """
 
+    prompt = f"""
+    You are a professional career coach and CV reviewer.
+
+    Task:
+    Analyze the CV content below for the role '{job_title}'.
+
+    Instructions:
+    1. Provide **concise, actionable feedback** in **6-7 lines max**, structured with bullet points.
+    2. For each section (Summary, Skills, Experience/Projects, Education), give:
+       - What to **highlight**
+       - What to **remove or shorten**
+       - What to **add or rephrase**, including **concrete example sentences or bullet points**
+    3. Include **at least one new concrete suggestion** per section if something is missing.
+    4. Focus **strictly on the CV content provided**; do not give general advice.
+    5. **Respond in the same language as the job title**:
+       - Hebrew job title → response in Hebrew
+       - English job title → response in English
+
+    CV content:
+    {content}
+    """
+
+    return cv_generate_reply(client, prompt)

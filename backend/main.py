@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -36,8 +38,10 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # --- Routes ---
 @app.get("/")
 async def chat(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    current_year = datetime.now().year
+    return templates.TemplateResponse("index.html", {"request": request, "current_year": current_year} )
 
 @app.get("/cv")
 async def cv(request: Request):
-    return templates.TemplateResponse("cv.html", {"request": request})
+    current_year = datetime.now().year
+    return templates.TemplateResponse("cv.html",  {"request": request, "current_year": current_year})

@@ -8,7 +8,7 @@ from google import genai
 
 from backend.database import SessionLocal
 from backend.services.db_service import get_chat, get_or_create_user, addMessageToDB
-from backend.services.ai_service import generate_reply
+from backend.services.ai_service import chat_generate_reply
 
 # --- Load environment variables ---
 load_dotenv()
@@ -62,7 +62,7 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
         # Generate AI reply
         else:
             print("[AI] Sending request to Gemini model")
-            reply = generate_reply(client, request.message)
+            reply = chat_generate_reply(client, request.message)
             # Save to DB
             chat_row = addMessageToDB(db, db_user_id, request.message, reply)
             cache[cache_key] = reply

@@ -1,7 +1,6 @@
 # backend/routers/cv.py
 from fastapi import APIRouter, HTTPException, Depends, Request, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from starlette.templating import Jinja2Templates
 from backend.database import SessionLocal
 from backend.services import cv_service, db_service
 from dotenv import load_dotenv
@@ -13,7 +12,6 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 router = APIRouter(prefix="/cv", tags=["cv"])
-templates = Jinja2Templates(directory="frontend/templates")
 
 # --- DB dependency ---
 def get_db():
@@ -23,11 +21,6 @@ def get_db():
     finally:
         db.close()
 
-# --- Render CV page ---
-@router.get("")
-def render_cv_page(request: Request):
-
-    return templates.TemplateResponse("cv.html", {"request": request})
 
 # --- Upload CV endpoint ---
 @router.post("/upload")

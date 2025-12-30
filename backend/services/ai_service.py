@@ -18,7 +18,7 @@ def normalize_reply(text: str) -> str:
 
 
 
-def generate_reply(client ,message:str) -> str:
+def chat_generate_reply(client ,message:str) -> str:
     try:
         system_prompt = (
             "אתה עוזר חכם שמגיב תמיד למשתמש. "
@@ -42,6 +42,24 @@ def generate_reply(client ,message:str) -> str:
     except Exception as e:
         print(f"[API ERROR] {str(e)}")
         return f"[MOCK RESPONSE] Echo: {message}"
+
+
+
+
+def cv_generate_reply(client, prompt: str) -> str:
+    """
+    Call the AI client with the given prompt and return the response text.
+    """
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[prompt]
+        )
+        return normalize_reply(response.text)
+
+    except Exception as e:
+        print(f"[API ERROR] {str(e)}")
+        return "[MOCK RESPONSE] Error generating CV feedback"
 
 
 

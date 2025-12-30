@@ -43,12 +43,20 @@ p.user {
     color: #ffffff;
     margin: 6px 0;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+
 }
 
-p.ai {
+.you{
+    font-size: larger;
+    font-family: monospace;
+}
+
+p.ai , p.system{
     color: #4facff;
     margin: 6px 0;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    font-size: larger;
+    font-family: monospace;
 }
 
 textarea.form-control {
@@ -62,13 +70,10 @@ textarea.form-control::placeholder {
 }
 
 
-button.btn-success {
-    background-color: #16a34a;
-    border: none;
-}
 
 button#sendBtn {
     background: #2c6ca5;
+    border: none;
 }
 
 button#sendBtn:hover {
@@ -82,15 +87,43 @@ button#sendBtn:hover {
 }
 
 .bg-primary {
-    background: rgb(255 255 255 / 12%) !important;
+   background: #000000a6 !important;
 }
 
-button.btn-success {
-    background-color: #2c6ca5;
+
+#submitBtn {
+     background: #2c6ca5;
     border: none;
+
+}
+
+#submitBtn:hover {
+    background-color: #2c6ca578;
+
 }
 
 
+
+.glass-card {
+    width: 70%;
+    max-width: unset;
+}
+
+
+.form-control-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.form-control-container input,
+.form-control-container button {
+    flex: 1 1 calc(50% - 0.5rem);
+}
+
+textarea#message {
+    min-height: 100px;
+}
 
 /* ===== Mobile Adjustments ===== */
 @media only screen and (max-width: 768px) {
@@ -105,7 +138,7 @@ button.btn-success {
     }
 
     .glass-card {
-        max-width: 90%;
+        max-width: 100%;
         height: auto !important;
         max-height: 80vh;
         display: flex;
@@ -119,9 +152,10 @@ button.btn-success {
         flex-direction: column;
     }
 
-    .chat-box {
-        max-height: 220px;
-        min-height: 120px;
+    .glass-card {
+        width: 100%;
+        max-width: unset;
+        min-height: 450px;
     }
 
     textarea, button#sendBtn {
@@ -136,6 +170,16 @@ button.btn-success {
     }
 
     .col-12.col-md-6 {
-        margin-bottom: 20%;
+        margin-bottom: 4%;
+    }
+
+    textarea.form-control {
+
+    min-height: 80px;
+    }
+
+    ul.navbar-nav.me-auto.mb-2.mb-md-0 {
+    display: flex;
+    flex-direction: row;
     }
 }

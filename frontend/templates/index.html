@@ -3,14 +3,17 @@
 {% block content %}
 <div class="container flex-grow-1 d-flex justify-content-center align-items-center">
     <div class="row justify-content-center w-100">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-12">
             <div class="card glass-card shadow-lg">
                 <div class="card-body d-flex flex-column" style="height: 70vh;">
                     <div id="chat" class="chat-box flex-grow-1 mb-3 overflow-auto"></div>
                     <textarea id="message" class="form-control mb-2" placeholder="Type your message..." rows="2"></textarea>
 
-                    <button id="sendBtn" class="btn btn-success w-100 mb-2">Send</button>
-                    <button id="clearBtn" class="btn btn-outline-light w-100">Clear Chat</button>
+                    <div class="form-control-container">
+                        <button id="sendBtn" class="btn btn-success w-100 ">Send</button>
+                        <button id="clearBtn" class="btn btn-outline-light w-100">Clear Chat</button>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 router = APIRouter(prefix="/cv", tags=["cv"])
-templates = Jinja2Templates(directory="frontend")
+templates = Jinja2Templates(directory="frontend/templates")
 
 # --- DB dependency ---
 def get_db():
@@ -26,6 +26,7 @@ def get_db():
 # --- Render CV page ---
 @router.get("")
 def render_cv_page(request: Request):
+
     return templates.TemplateResponse("cv.html", {"request": request})
 
 # --- Upload CV endpoint ---

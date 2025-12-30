@@ -1,15 +1,9 @@
-# main.py
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pathlib import Path
-
-from backend.database import Base, engine
 from backend.routers import chat, cv
-
-# --- Create tables ---
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -22,15 +16,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Include routers BEFORE static mount ---
+# Include routers
 app.include_router(chat.router)
+# Include routers
 app.include_router(cv.router)
 
-# --- Static files ---
-BASE_DIR = Path(__file__).resolve().parent
-FRONTEND_DIR = BASE_DIR.parent / "frontend"
-app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
+# --- Paths ---
+BASE_DIR = Path(__file__).resolve().parent
+TEMPLATES_DIR = BASE_DIR.parent / "frontend/templates"
+STATIC_DIR = BASE_DIR.parent / "frontend/static"
+
+# --- Templates ---
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+
+# --- Static ---
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# --- Routes ---
 @app.get("/")
-async def root():
-    return FileResponse(FRONTEND_DIR / "index.html")
+async def chat(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/cv")
+async def cv(request: Request):
+    return templates.TemplateResponse("cv.html", {"request": request})

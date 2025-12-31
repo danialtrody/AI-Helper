@@ -1,5 +1,5 @@
 # backend/services/cv_service.py
-from backend.services.ai_service import cv_generate_reply
+from backend.services.ai_service import generate_reply
 from PyPDF2 import PdfReader
 import docx
 
@@ -32,12 +32,8 @@ async def read_cv_file(file):
         raise ValueError("Unsupported file type")
     return content
 
+
 def generate_cv_feedback(content: str, job_title: str, client):
-    """
-    Generate concise, actionable CV feedback (6-7 lines max),
-    structured in bullet points, including example sentences.
-    Respond in the same language as the job title.
-    """
 
     prompt = f"""
     You are a professional career coach and CV reviewer.
@@ -61,4 +57,4 @@ def generate_cv_feedback(content: str, job_title: str, client):
     {content}
     """
 
-    return cv_generate_reply(client, prompt)
+    return generate_reply(client, prompt)

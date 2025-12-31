@@ -5,6 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const jobTitleInput = document.getElementById("jobTitle");
     const cvFileInput = document.getElementById("cvFile");
 
+
+    jobTitleInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            submitBtn.click();
+        }
+    });
+
     submitBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         const jobTitle = jobTitleInput.value.trim();

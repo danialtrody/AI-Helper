@@ -7,8 +7,8 @@ import os
 from google import genai
 
 from backend.database import SessionLocal
-from backend.services.db_service import get_chat, get_or_create_user, addMessageToDB
-from backend.services.ai_service import chat_generate_reply
+from backend.services.chat_service import generate_chat_feedback
+from backend.services.db_service import get_chat, get_or_create_user, save_message_to_db
 
 # --- Load environment variables ---
 load_dotenv()
@@ -37,6 +37,7 @@ cache = {}
 # --- Chat endpoint ---
 @router.post("")
 async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
+
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="Message is empty")
 
@@ -62,9 +63,9 @@ async def chat_endpoint(request: ChatRequest, db: Session = Depends(get_db)):
         # Generate AI reply
         else:
             print("[AI] Sending request to Gemini model")
-            reply = chat_generate_reply(client, request.message)
+            reply = generate_chat_feedback(client, request.message)
             # Save to DB
-            chat_row = addMessageToDB(db, db_user_id, request.message, reply)
+            chat_row = save_message_to_db(db, db_user_id, request.message, reply)
             cache[cache_key] = reply
             print(f"[SUCCESS] Response saved | chat_id={chat_row.id}")
 

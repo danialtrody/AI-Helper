@@ -103,12 +103,10 @@ button#sendBtn:hover {
 }
 
 
-
 .glass-card {
-    width: 70%;
+    width: 60%;
     max-width: unset;
 }
-
 
 .form-control-container {
     display: flex;

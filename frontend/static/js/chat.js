@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     messageInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault(); // מונע ירידת שורה
+            e.preventDefault();
             sendMessage();
         }
     });

@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from backend.models import User, Chat, CV
 
 
@@ -20,7 +19,7 @@ def get_chat(db, user_id: str, message: str) -> Chat | None:
         .first()
     )
 
-def addMessageToDB(db, user_id: str, message: str, reply: str) -> Chat:
+def save_message_to_db(db, user_id: str, message: str, reply: str) -> Chat:
     newMessage = Chat(user_id=user_id, message=message, reply=reply)
     db.add(newMessage)
     db.commit()
@@ -28,7 +27,6 @@ def addMessageToDB(db, user_id: str, message: str, reply: str) -> Chat:
     return newMessage
 
 def save_cv_to_db(db: Session, user_id: str, filename: str, job_title: str, content: str, feedback: str):
-    """Save the CV and AI feedback to the database."""
     user = get_or_create_user(db, user_id)
     cv = CV(
         user_id=user.id,

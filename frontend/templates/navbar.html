@@ -10,18 +10,52 @@
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
 
         <li class="nav-item">
-          <a href="/" class="btn btn-outline-light">Chat AI</a>
+          <button id="chatBtn" class="btn btn-outline-light">Chat AI</button>
         </li>
 
         <li class="nav-item">
-          <a href="/cv" class="btn btn-outline-light me-2">CV Analyzer</a>
+          <button id="cvBtn" class="btn btn-outline-light me-2">CV Analyzer</button>
+        </li>
+
+        <li class="nav-item" id="logoutBtn">
+          <button class="btn btn-outline-light">Logout</button>
         </li>
 
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-        <li class="nav-item m-1">
-        </li>
+        <li class="nav-item m-1"></li>
       </ul>
     </div>
   </div>
 </nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.querySelector("#logoutBtn button");
+  const chatBtn = document.getElementById("chatBtn");
+  const cvBtn = document.getElementById("cvBtn");
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    logoutBtn.parentElement.style.display = "none";
+
+    [chatBtn, cvBtn].forEach(btn => {
+      btn.style.pointerEvents = "auto";
+      btn.addEventListener("click", () => {
+        if (btn.id === "chatBtn") alert("Please log in to access Chat AI");
+        else alert("Please log in to access CV Analyzer");
+      });
+      btn.classList.add("disabled");
+      btn.style.opacity = "0.6";
+    });
+  } else {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "/login-page";
+    });
+    chatBtn.addEventListener("click", () => window.location.href = "/chat");
+    cvBtn.addEventListener("click", () => window.location.href = "/cv");
+  }
+});
+</script>

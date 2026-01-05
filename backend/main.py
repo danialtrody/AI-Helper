@@ -10,17 +10,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from backend.routers import chat, cv
+from backend.database import Base, engine
+from backend.routers import chat, cv, auth
 
-
+# ==============================
+# FastAPI App Initialization
+# ==============================
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 # ==============================
 # CORS Middleware
 # ==============================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify allowed origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,6 +36,7 @@ app.add_middleware(
 # ==============================
 app.include_router(chat.router)
 app.include_router(cv.router)
+app.include_router(auth.router)
 
 # ==============================
 # Paths for Templates and Static Files
@@ -54,7 +60,14 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # ==============================
 @app.get("/")
 async def chat(request: Request):
-    """Render the chat page."""
+    current_year = datetime.now().year
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "current_year": current_year}
+    )
+
+@app.get("/chat")
+async def chat_page(request: Request):
     current_year = datetime.now().year
     return templates.TemplateResponse(
         "index.html",
@@ -62,10 +75,17 @@ async def chat(request: Request):
     )
 
 @app.get("/cv")
-async def cv(request: Request):
-    """Render the CV page."""
+async def cv_page(request: Request):
     current_year = datetime.now().year
     return templates.TemplateResponse(
         "cv.html",
         {"request": request, "current_year": current_year}
     )
+
+@app.get("/login-page")
+def render_login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.get("/register-page")
+def render_register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})

@@ -1,8 +1,13 @@
+# ==============================
+# Chat Service - backend/services/chat_service.py
+# ==============================
+
 from backend.services.ai_service import generate_reply
 
 
-
-
+# ==============================
+# Generate chat feedback
+# ==============================
 def generate_chat_feedback(client, message: str):
     prompt = f"""
         You are a professional AI assistant.
@@ -12,7 +17,7 @@ def generate_chat_feedback(client, message: str):
         Provide a single, continuous paragraph.
         The response must be in the same language as the user's message.
         Read the user's message carefully and answer it directly.
-    
+
         User: {message}
         AI:
     """

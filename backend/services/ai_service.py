@@ -1,23 +1,26 @@
+# ==============================
+# AI Service - backend/services/ai_service.py
+# ==============================
+
 import re
 
+# ==============================
+# Normalize reply function
+# ==============================
 def normalize_reply(text: str) -> str:
-    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)   # bold -> text
-    text = re.sub(r"\*(.*?)\*", r"\1", text)       # italic -> text
-    text = re.sub(r"`(.*?)`", r"\1", text)         # code -> text
-
+    text = re.sub(r"\*\*(.*?)\*\*", r"\1", text)
+    text = re.sub(r"\*(.*?)\*", r"\1", text)
+    text = re.sub(r"`(.*?)`", r"\1", text)
     text = re.sub(r"\n\s*[-•*]\s*", ". ", text)
     text = re.sub(r"\n\s*\d+\.\s*", ". ", text)
-
     text = re.sub(r"\n+", " ", text)
-
     text = re.sub(r"\s{2,}", " ", text)
-
     sentences = re.split(r'(?<=[.!?])\s', text)
     return " ".join(sentences)
 
-
-
-
+# ==============================
+# Generate reply function
+# ==============================
 def generate_reply(client, prompt: str) -> str:
     try:
         response = client.models.generate_content(
@@ -29,13 +32,3 @@ def generate_reply(client, prompt: str) -> str:
     except Exception as e:
         print(f"[API ERROR] {str(e)}")
         return "[MOCK RESPONSE] Error generating CV feedback"
-
-
-
-
-
-
-
-
-
-

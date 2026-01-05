@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div class="login-container card glass-card shadow-lg p-4">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    required
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button id="loginButton" type="submit" class="btn btn-success w-100 mb-2">Login</button>
+            <a href="/register-page" class="btn btn-outline-light w-100">Register</a>
+
+            <div id="loginError" class="text-danger text-center mt-3"></div>
+        </form>
+    </div>
+
+
+<script defer src="/static/js/login.js"></script>
+{% endblock %}

@@ -1,11 +1,15 @@
-# backend/services/cv_service.py
+# ==============================
+# CV Service - backend/services/cv_service.py
+# ==============================
+
 from backend.services.ai_service import generate_reply
 from PyPDF2 import PdfReader
 import docx
 
+# ==============================
+# Read CV file
+# ==============================
 async def read_cv_file(file):
-    """Read uploaded CV file (txt, pdf, docx) and return text content."""
-
     content = ""
     file_bytes = await file.read()
 
@@ -16,7 +20,6 @@ async def read_cv_file(file):
         with open("temp.pdf", "wb") as f:
             f.write(file_bytes)
         reader = PdfReader("temp.pdf")
-
         for page in reader.pages:
             page_text = page.extract_text()
             if page_text:
@@ -32,9 +35,10 @@ async def read_cv_file(file):
         raise ValueError("Unsupported file type")
     return content
 
-
+# ==============================
+# Generate CV feedback
+# ==============================
 def generate_cv_feedback(content: str, job_title: str, client):
-
     prompt = f"""
     You are a professional career coach and CV reviewer.
 

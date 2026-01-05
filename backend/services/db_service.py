@@ -1,17 +1,14 @@
+# ==============================
+# DB Service - backend/services/db_service.py
+# ==============================
+
 from sqlalchemy.orm import Session
-from backend.models import User, Chat, CV
+from backend.models import Chat, CV
 
 
-def get_or_create_user(db, user_id: str) -> User:
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        user = User(id=user_id, username=user_id, hashed_password="")
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        print(f"[USER CREATED] id={user.id}")
-    return user
-
+# ==============================
+# Get chat message
+# ==============================
 def get_chat(db, user_id: str, message: str) -> Chat | None:
     return (
         db.query(Chat)
@@ -19,6 +16,9 @@ def get_chat(db, user_id: str, message: str) -> Chat | None:
         .first()
     )
 
+# ==============================
+# Save chat message
+# ==============================
 def save_message_to_db(db, user_id: str, message: str, reply: str) -> Chat:
     newMessage = Chat(user_id=user_id, message=message, reply=reply)
     db.add(newMessage)
@@ -26,10 +26,12 @@ def save_message_to_db(db, user_id: str, message: str, reply: str) -> Chat:
     db.refresh(newMessage)
     return newMessage
 
-def save_cv_to_db(db: Session, user_id: str, filename: str, job_title: str, content: str, feedback: str):
-    user = get_or_create_user(db, user_id)
+# ==============================
+# Save CV
+# ==============================
+def save_cv_to_db(db: Session, user_id, filename: str, job_title: str, content: str, feedback: str):
     cv = CV(
-        user_id=user.id,
+        user_id=user_id,
         filename=filename,
         job_title=job_title,
         content=content,
@@ -39,4 +41,3 @@ def save_cv_to_db(db: Session, user_id: str, filename: str, job_title: str, cont
     db.commit()
     db.refresh(cv)
     return cv
-

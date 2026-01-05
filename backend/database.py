@@ -21,7 +21,6 @@ engine = create_engine(
 # ==============================
 # Session Local
 # ==============================
-# Create session factory for dependency injection
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,

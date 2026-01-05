@@ -12,13 +12,31 @@ document.addEventListener("DOMContentLoaded", () => {
         messageInput.value = "";
 
         try {
-            const response = await fetch("/chat", {
+            let token = localStorage.getItem("token");
+            let user_id = "guest";
+            let username = "Guest";
+
+            const headers = { "Content-Type": "application/json" };
+            if (token) headers["Authorization"] = "Bearer " + token;
+
+            const response = await fetch("/chat/", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message, user_id: "guest" })
+                headers: headers,
+                body: JSON.stringify({
+                    message,
+                    user_id
+                })
             });
+
+            if (!response.ok) {
+                const data = await response.json();
+                appendMessage("System", `[Error] ${data.detail || "Failed to get reply"}`);
+                return;
+            }
+
             const data = await response.json();
             appendMessage("AI", data.reply);
+
         } catch (err) {
             appendMessage("System", "[Error] Could not get reply.");
             console.error(err);

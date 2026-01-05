@@ -15,27 +15,57 @@
 1. **AI Chat** – Real-time chat powered by **Google Gemini API**, allowing users to converse with an intelligent AI assistant.  
 2. **CV Analyzer** – Users can upload their CVs, and the AI provides **concise, actionable feedback** tailored to the specified job title.
 
-The backend is built with **FastAPI** and uses **SQLite3** for persistent storage. The frontend is fully **responsive**, styled with **Bootstrap 5**, and ensures seamless use across desktop and mobile devices.
+The backend is built with **FastAPI** and uses **SQLite3** for persistent storage.  
+The frontend is fully **responsive**, styled with **Bootstrap 5**, and ensures seamless use across desktop and mobile devices.
+
+The platform includes a **full authentication system**, ensuring that all data is securely associated with authenticated users.
 
 ---
 
 ## Features
 
+### Authentication & Authorization
+- **User registration and login**
+- **JWT-based authentication**
+- **Protected routes** (Chat & CV Analyzer require login)
+- **Secure password hashing** using Argon2
+- **Logout support** with token removal
+- Navigation elements are hidden or disabled for unauthenticated users
+
+---
+
 ### AI Chat
-- **AI-powered chat**: Interactions handled by Google Gemini's latest model.
-- **Multi-language support**: The AI responds in the same language as the user input.
-- **Persistent chat history**: All messages stored in SQLite3.
-- **In-memory caching**: Frequently asked messages are cached for faster responses.
-- **Markdown normalization**: AI replies are stripped of Markdown formatting for clean display.
-- **Responsive UI**: Works well on desktop and mobile.
-- **Real-time updates**: Messages appear instantly without page reloads.
+- **AI-powered chat** using Google Gemini.
+- **JWT-protected endpoint** – only authenticated users can send messages.
+- **User-based chat history**: every message is linked to the logged-in user.
+- **Persistent storage**: messages and replies saved in SQLite3.
+- **In-memory caching per user** for faster responses.
+- **Multi-language support**: replies match the user’s language.
+- **Markdown normalization**: AI responses are cleaned for display.
+- **Responsive UI** with real-time message updates.
+
+---
 
 ### CV Analyzer
-- **Upload CVs** in `.pdf`, `.txt`, or `.docx` formats.
-- **Job-specific feedback**: AI analyzes CV content in the context of the provided job title.
-- **Actionable suggestions**: Highlights what to add, remove, or rephrase in each CV section.
-- **Language-aware feedback**: Response is in the same language as the job title.
-- **Stored in database**: All uploaded CVs and feedback are saved for later reference.
+- **JWT-protected CV upload**
+- Upload CVs in `.pdf`, `.txt`, or `.docx` formats.
+- **Job-specific AI feedback**
+- **Actionable suggestions** focused strictly on the uploaded CV.
+- **Language-aware feedback** (based on job title language).
+- **User-based persistence**:
+  - CVs are linked to the authenticated user
+  - Original content and AI feedback stored in the database
+
+---
+
+## User-Based Data Model
+
+- Each authenticated user has:
+  - Chat history
+  - Uploaded CVs
+- No anonymous or auto-created users
+- All database records are linked via `user_id` from the JWT token
+- Data isolation is guaranteed between users
 
 ---
 
@@ -46,11 +76,12 @@ The backend is built with **FastAPI** and uses **SQLite3** for persistent storag
 - SQLAlchemy (ORM)  
 - SQLite3  
 - Google Gemini API  
+- JWT Authentication  
 
 **Frontend:**  
 - HTML & CSS (Bootstrap 5)  
-- JavaScript (dynamic chat & CV interactions)  
-- Jinja2 templates  
+- JavaScript  
+- Jinja2 Templates  
 
 **Other Tools:**  
 - dotenv for environment variables  

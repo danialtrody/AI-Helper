@@ -13,33 +13,53 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    submitBtn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const jobTitle = jobTitleInput.value.trim();
-        const file = cvFileInput.files[0];
+   submitBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-        if (!jobTitle || !file) {
-            appendMessage("System", "Please enter a job title and select a CV file.");
+    const jobTitle = jobTitleInput.value.trim();
+    const file = cvFileInput.files[0];
+
+    if (!jobTitle || !file) {
+        appendMessage("System", "Please enter a job title and select a CV file.");
+        return;
+    }
+
+    appendMessage("System", `Uploading CV: ${file.name}...`);
+
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            appendMessage("System", "You must be logged in to upload a CV.");
             return;
         }
 
-        appendMessage("System", `Uploading CV: ${file.name}...`);
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("job_title", jobTitle);
 
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("job_title", jobTitle);
-            formData.append("user_id", "guest");
+        const response = await fetch("/cv/upload", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        });
 
-            const response = await fetch("/cv/upload", { method: "POST", body: formData });
-            const data = await response.json();
-            appendMessage("AI Feedback", data.feedback);
+        const data = await response.json();
 
-        } catch (err) {
-            appendMessage("System", "[Error] Could not get feedback.");
-            console.error(err);
+        if (!response.ok) {
+            appendMessage("System", `[Error] ${data.detail || "Upload failed"}`);
+            return;
         }
-    });
+
+        appendMessage("AI Feedback", data.feedback);
+
+    } catch (err) {
+        appendMessage("System", "[Error] Could not get feedback.");
+        console.error(err);
+    }
+});
+
 
     clearBtn.addEventListener("click", (e) => {
         e.preventDefault();

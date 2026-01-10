@@ -89,3 +89,7 @@ def render_login_page(request: Request):
 @app.get("/register-page")
 def render_register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

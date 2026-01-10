@@ -90,6 +90,6 @@ def render_login_page(request: Request):
 def render_register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok"}
